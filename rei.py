@@ -318,7 +318,8 @@ def gameLoop():
             pygame.draw.rect(screen,(120,0,0),wall_obj)
             if disc.colliderect(wall_obj):  #障害物の当たり判定
                 discVelocity[0]*=-1
-                
+                discVelocity[1]*=-1
+
 
         pygame.display.update()
         clock.tick(50)
