@@ -41,6 +41,10 @@ goal2_x = screen.get_width()-10
 goal2_y = screen.get_height()/2 - goalheight
 goal1 = pygame.Rect(goal1_x,goal1_y,10,100)
 goal2 = pygame.Rect(goal2_x,goal2_y,10,100)
+goal1_1p = pygame.Rect(goal1_x,goal1_y-50,10,200)         #２点差になった時のペナルティのゴール1の範囲の描写
+goal2_1p = pygame.Rect(goal2_x,goal2_y-50,10,200)         #２点差になった時のペナルティのゴール2の範囲の描写
+goal1_2p = pygame.Rect(0,0,10,600)                     #５点差になった時のペナルティのゴール1の範囲の描写
+goal2_2p = pygame.Rect(screen.get_width()-10,0,10,600) #５点差になった時のペナルティのゴール2の範囲の描写
 paddleVelocity= 4
 disc= pygame.Rect(screen.get_width()/2,screen.get_height()/2,20,20)
 discVelocity= [5,5]
@@ -206,6 +210,24 @@ def gameLoop():
             discVelocity[1] *= -1.2
         sa = score1 - score2
 
+        if score1 - score2 >= 2 and disc.x <= disc.width and (disc.y <= 400) and (disc.y >= 200):                                            #2点差になったときにゴール1を全体にする当たり判定
+            score2+=1
+            serveDirection=-1
+            resetPuck()
+        if score2 - score1 >= 2 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 400) and (disc.y >= 200):           #2点差になったときにゴール2を全体にする当たり判定
+            disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 400) and (disc.y >= 200)
+            score1+=1
+            serveDirection=-1
+            resetPuck()
+        if score1 - score2 >= 5 and disc.x <= disc.width and (disc.y <= 600) and (disc.y >= 0):                                           #5点差になったときにゴール1を全体にする当たり判定
+            score2+=1
+            serveDirection=-1
+            resetPuck()
+        if score2 - score1 >= 5 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 600) and (disc.y >= 0):              #5点差になったときにゴール2を全体にする当たり判定
+            score1+=1
+            serveDirection=-1
+            resetPuck()
+
         if sa >= 5 and score1 > score2:
             size2 = 54
             redpadimg = pg.transform.rotozoom(pg.image.load(f"./ex05/redpad.png"), 0, 1.8 )
@@ -246,6 +268,18 @@ def gameLoop():
         pygame.draw.line(screen, blue, (0,screen.get_height()/2 + goalheight), (0,screen.get_height()) ,5)
         pygame.draw.line(screen, red, (screen.get_width(),0), (screen.get_width(),screen.get_height()/2-goalheight) ,5)
         pygame.draw.line(screen, red, (screen.get_width(),screen.get_height()/2 + goalheight), (screen.get_width(),screen.get_height()) ,5)
+        if score1 - score2 < 2:                                  
+            pygame.draw.rect(screen,light_blue,goal1) #２点差になった時の当たり判定を全体にした時の描写
+        elif score1 - score2 < 5:
+            pygame.draw.rect(screen,light_blue,goal1_1p) #５点差になった時の当たり判定を全体にした時の描写
+        else:
+            pygame.draw.rect(screen,light_blue,goal1_2p) 
+        if score2 - score1 < 2:                                  
+            pygame.draw.rect(screen,light_blue,goal2) #２点差になった時の当たり判定を全体にした時の描写
+        elif score2 - score1 < 5:
+            pygame.draw.rect(screen,light_blue,goal2_1p) #５点差になった時の当たり判定を全体にした時の描写
+        else:
+            pygame.draw.rect(screen,light_blue,goal2_2p)
         #pygame.draw.circle(screen,red,)
         #5点追加されたら障害物表示
         if score1 + score2 >= 5:
