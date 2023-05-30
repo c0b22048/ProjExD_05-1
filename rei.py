@@ -2,6 +2,7 @@ import pygame
 import time
 from pygame.locals import *
 import pygame as pg
+import random
 
 pygame.init()
 
@@ -93,6 +94,14 @@ def message_to_screen(msg,color,y_displace=0,x_displace=0,size = "small"):
     textRect.center = (screen.get_width()/2+x_displace) , ((screen.get_height()/2) + y_displace)
     screen.blit(textSurf,textRect)
 
+#５点追加されたら障害物を増やす関数
+def wall():
+    wall_x = random.randint(50,100) #障害物の横
+    wall_y = random.randint(50,100) #障害物の縦
+
+    wall_= pygame.Rect(random.randint(0,screen.get_width()-wall_x),random.randint(0,screen.get_height()-wall_y),wall_x,wall_y)
+    return wall_
+
 #ゲームループ
 def gameLoop():
     gameExit = False
@@ -108,6 +117,7 @@ def gameLoop():
     redpadimg = pygame.image.load('./ex05/redpad.png')
     rcenter = 5
     bcenter = 5
+    wall_obj = wall()
     while not gameExit:
         
         for event in pygame.event.get():
@@ -228,7 +238,15 @@ def gameLoop():
         pygame.draw.line(screen, red, (screen.get_width(),0), (screen.get_width(),screen.get_height()/2-goalheight) ,5)
         pygame.draw.line(screen, red, (screen.get_width(),screen.get_height()/2 + goalheight), (screen.get_width(),screen.get_height()) ,5)
         #pygame.draw.circle(screen,red,)
+        #5点追加されたら障害物表示
+        if score1 + score2 >= 5:
+             ###障害物の表示
+            pygame.draw.rect(screen,(120,0,0),wall_obj)
+            if disc.colliderect(wall_obj):  #障害物の当たり判定
+                discVelocity[0]*=-1
+                
         pygame.display.update()
         clock.tick(50)
+
 
 gameLoop()  
