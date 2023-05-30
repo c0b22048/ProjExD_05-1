@@ -184,7 +184,8 @@ def gameLoop():
             discVelocity[1]*=-1
         #プレイヤーとディスクが衝突したとき
         if disc.colliderect(paddle1) or disc.colliderect(paddle2):
-            discVelocity[0]*=-1
+            discVelocity[0] *= -1.2
+            discVelocity[1] *= -1.2
         sa = score1 - score2
 
         if sa >= 5 and score1 > score2:
