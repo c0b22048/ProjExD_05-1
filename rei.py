@@ -11,7 +11,7 @@ white = (255 ,255, 255)
 black = (0, 0, 0)
 green = (0, 150, 0)
 red = (255, 0, 0)
-blue = (0, 0, 255)
+blue = (0, 0, 255) 
 light_blue = (147, 251, 253)
 
 #Clockの初期化
@@ -45,6 +45,7 @@ paddleVelocity= 4
 disc= pygame.Rect(screen.get_width()/2,screen.get_height()/2,20,20)
 discVelocity= [5,5]
 img = pygame.image.load('./ex05/disc.png')
+sdisc = True  # discのスタート方向を決める変数
 #スコア
 score1,score2 = 0,0
 serveDirection = 1
@@ -118,6 +119,8 @@ def gameLoop():
     rcenter = 5
     bcenter = 5
     wall_obj = wall()
+    sdisc = False
+
     while not gameExit:
         
         for event in pygame.event.get():
@@ -174,15 +177,20 @@ def gameLoop():
         paddle2= pygame.Rect(paddle2.x,paddle2.y, size2, size2)
 
         #パックの更新
-        disc.x+=discVelocity[0]
-        disc.y+=discVelocity[1]
+        if sdisc:  # プレイヤー1が点を決めた状態
+            disc.x += discVelocity[0]
+        else:  # プレイヤー２が点を決めた状態
+            disc.x -= discVelocity[0]
+        disc.y += discVelocity[1]
         #プレイヤー2がゴールを決めたとき
         if (disc.x <= disc.width -10 and (disc.y <= screen.get_height()/2 + goalheight) and (disc.y >= screen.get_height()/2 - goalheight)):
+            sdisc = False
             score2+=1
             serveDirection=-1
             resetPuck()
         #プレイヤー１がゴールを決めたとき
         if (disc.x >= screen.get_width()-goalwidth-disc.width) and (disc.y <= screen.get_height()/2 + goalheight) and (disc.y >= screen.get_height()/2 - goalheight):
+            sdisc = True
             score1+=1
             serveDirection=1
             resetPuck()
@@ -194,7 +202,8 @@ def gameLoop():
             discVelocity[1]*=-1
         #プレイヤーとディスクが衝突したとき
         if disc.colliderect(paddle1) or disc.colliderect(paddle2):
-            discVelocity[0]*=-1
+            discVelocity[0] *= -1.2
+            discVelocity[1] *= -1.2
         sa = score1 - score2
 
         if sa >= 5 and score1 > score2:
