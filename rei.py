@@ -14,6 +14,10 @@ red = (255, 0, 0)
 blue = (0, 0, 255) 
 light_blue = (147, 251, 253)
 
+# スコア
+score1, score2 = 0, 0
+serveDirection = 1
+
 #Clockの初期化
 clock= pygame.time.Clock()
 
@@ -99,6 +103,14 @@ def message_to_screen(msg,color,y_displace=0,x_displace=0,size = "small"):
     textRect.center = (screen.get_width()/2+x_displace) , ((screen.get_height()/2) + y_displace)
     screen.blit(textSurf,textRect)
 
+
+def draw_text(screen,x,y,text,size,col):#文字表示の関数
+    font = pygame.font.Font(None,size) #サイズの定義
+    s = font.render(text,True,col)
+    x = x - s.get_width()/2 #指定した場所をわりやすくする
+    y = y - s.get_height()/2#指定した場所をわりやすくする
+    screen.blit(s,[x,y])
+
 #５点追加されたら障害物を増やす関数
 def wall():
     wall_x = random.randint(50,100) #障害物の横
@@ -107,11 +119,14 @@ def wall():
     wall_= pygame.Rect(random.randint(0,screen.get_width()-wall_x),random.randint(0,screen.get_height()-wall_y),wall_x,wall_y)
     return wall_
 
+
 #ゲームループ
 def gameLoop():
+    global score1,score2
     gameExit = False
     gameOver = False
     score2,score1=0,0
+    win = None
     sa = 0
     sa2 = 0
     size1 = 20
@@ -245,7 +260,9 @@ def gameLoop():
             rcenter = 5
             bcenter = 5
         
+        
         #画面表示
+
         screen.fill(black)
         message_to_screen("Player 1",white,-250,-150,"small")
         message_to_screen(str(score1),white,-200,-150,"small")
@@ -281,6 +298,20 @@ def gameLoop():
         else:
             pygame.draw.rect(screen,light_blue,goal2_2p)
         #pygame.draw.circle(screen,red,)
+
+        if score1 == 10:
+            draw_text(screen,400,300,"player1 win",100,white)
+            pygame.display.update()
+            time.sleep(2)
+            break
+        if score2 == 10:
+            draw_text(screen,400,300,"player2 win",100,white)
+            pygame.display.update()
+            time.sleep(2)
+            break
+        
+        
+
         #5点追加されたら障害物表示
         if score1 + score2 >= 5:
              ###障害物の表示
@@ -288,6 +319,7 @@ def gameLoop():
             if disc.colliderect(wall_obj):  #障害物の当たり判定
                 discVelocity[0]*=-1
                 
+
         pygame.display.update()
         clock.tick(50)
 
