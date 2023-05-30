@@ -115,8 +115,10 @@ def draw_text(screen,x,y,text,size,col):#文字表示の関数
 def wall():
     wall_x = random.randint(50,100) #障害物の横
     wall_y = random.randint(50,100) #障害物の縦
+    wall_xx = random.randint(0,screen.get_width()-wall_x)
+    wall_yy = random.randint(0,screen.get_height()-wall_y)
 
-    wall_= pygame.Rect(random.randint(0,screen.get_width()-wall_x),random.randint(0,screen.get_height()-wall_y),wall_x,wall_y)
+    wall_= pygame.Rect(wall_xx,wall_yy,wall_x,wall_y)
     return wall_
 
 
@@ -225,20 +227,24 @@ def gameLoop():
             discVelocity[1] *= -1.2
         sa = score1 - score2
 
-        if score1 - score2 >= 2 and disc.x <= disc.width and (disc.y <= 400) and (disc.y >= 200):                                            #2点差になったときにゴール1を全体にする当たり判定
+        if score1 - score2 >= 2 and disc.x <= disc.width and (disc.y <= 400) and (disc.y >= 200):  # 2点差になったときにゴール1を全体にする当たり判定
+            sdisc = False
             score2+=1
             serveDirection=-1
             resetPuck()
-        if score2 - score1 >= 2 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 400) and (disc.y >= 200):           #2点差になったときにゴール2を全体にする当たり判定
+        if score2 - score1 >= 2 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 400) and (disc.y >= 200):  # 2点差になったときにゴール2を全体にする当たり判定
             disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 400) and (disc.y >= 200)
+            sdisc = True
             score1+=1
             serveDirection=-1
             resetPuck()
-        if score1 - score2 >= 5 and disc.x <= disc.width and (disc.y <= 600) and (disc.y >= 0):                                           #5点差になったときにゴール1を全体にする当たり判定
+        if score1 - score2 >= 5 and disc.x <= disc.width and (disc.y <= 600) and (disc.y >= 0):  # 5点差になったときにゴール1を全体にする当たり判定
+            sdisc = False
             score2+=1
             serveDirection=-1
             resetPuck()
-        if score2 - score1 >= 5 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 600) and (disc.y >= 0):              #5点差になったときにゴール2を全体にする当たり判定
+        if score2 - score1 >= 5 and disc.x >= screen.get_width()-goalwidth-disc.width and (disc.y <= 600) and (disc.y >= 0):  # 5点差になったときにゴール2を全体にする当たり判定
+            sdisc = True
             score1+=1
             serveDirection=-1
             resetPuck()
@@ -318,6 +324,7 @@ def gameLoop():
             pygame.draw.rect(screen,(120,0,0),wall_obj)
             if disc.colliderect(wall_obj):  #障害物の当たり判定
                 discVelocity[0]*=-1
+                discVelocity[1]*=-1
                 
 
         pygame.display.update()
